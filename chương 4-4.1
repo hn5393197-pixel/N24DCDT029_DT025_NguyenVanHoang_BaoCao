@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Hàm tìm và in ra cặp phần tử có tổng bằng S
+void findPairWithSum(vector<int> arr, int S) {
+    // Bắt lỗi ca biên: Mảng có ít hơn 2 phần tử (Ví dụ: [5])
+    if (arr.size() < 2) {
+        cout << "Khong tim thay cap phan tu." << endl;
+        return;
+    }
+
+    // Bước 1: Sắp xếp mảng tăng dần - Chi phí O(n log n)
+    sort(arr.begin(), arr.end());
+
+    // Bước 2: Kỹ thuật hai con trỏ - Chi phí O(n)
+    int left = 0;
+    int right = arr.size() - 1;
+    bool found = false;
+
+    // Điều kiện duy trì: left luôn nhỏ hơn right, không bao giờ lấy 1 phần tử 2 lần
+    while (left < right) {
+        int current_sum = arr[left] + arr[right];
+
+        if (current_sum == S) {
+            cout << "Tim thay cap: (" << arr[left] << ", " << arr[right] << ")" << endl;
+            found = true;
+            break; // Thoát ngay khi tìm thấy cặp đầu tiên
+        } 
+        else if (current_sum < S) {
+            // Tổng đang nhỏ hơn S -> Loại bỏ phần tử nhỏ nhất hiện tại (tăng left)
+            left++; 
+        } 
+        else {
+            // Tổng đang lớn hơn S -> Loại bỏ phần tử lớn nhất hiện tại (giảm right)
+            right--; 
+        }
+    }
+
+    if (!found) {
+        cout << "Khong tim thay cap phan tu." << endl;
+    }
+}
+
+int main() {
+    // ---- CHẠY THỰC NGHIỆM CÁC CA KIỂM THỬ (TEST CASES) ----
+
+    // TC01: Ca hợp lệ (Ví dụ nhỏ cơ bản)
+    cout << "TC01 [arr={15, 2, 7, 11}, S=9]:\t";
+    findPairWithSum({15, 2, 7, 11}, 9);
+
+    // TC02: Ca hợp lệ (Nhiều cặp thỏa mãn)
+    cout << "TC02 [arr={1, 2, 3, 4, 5}, S=6]:\t";
+    findPairWithSum({1, 2, 3, 4, 5}, 6);
+
+    // TC04: Ca biên bắt buộc (Có cặp lặp lại)
+    cout << "TC04 [arr={5, 5}, S=10]:\t\t";
+    findPairWithSum({5, 5}, 10);
+
+    // TC06: Ca biên bắt buộc (Mảng chỉ 1 phần tử)
+    cout << "TC06 [arr={5}, S=10]:\t\t\t";
+    findPairWithSum({5}, 10);
+
+    // TC09: Ca vô nghiệm (Tránh lỗi cộng trùng 1 số)
+    cout << "TC09 [arr={4, 7, 8}, S=8]:\t\t";
+    findPairWithSum({4, 7, 8}, 8);
+
+    // TC12: Ca vô nghiệm (Toàn số trùng)
+    cout << "TC12 [arr={2, 2, 2, 2}, S=5]:\t\t";
+    findPairWithSum({2, 2, 2, 2}, 5);
+
+    return 0;
+}
